@@ -73,6 +73,7 @@ class MyFrame1(wx.Frame):
         self.m_button2 = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
         gSizer1.Add(self.m_button2, 0, wx.ALL, 5)
 
+
         self.SetSizer(gSizer1)
         self.Layout()
 
@@ -92,4 +93,5 @@ class MyFrame1(wx.Frame):
     def onCancle(self, event):
         event.Skip()
 
-
+    def onCheck(self,event):
+        event.Skip()

@@ -17,7 +17,6 @@ class WifeUI(wbgui.MyFrame1):
     def onCancle(self, event):
         self.Close(force=True)
 
-
 def main():
     app=wx.App()
     wife=WifeUI(None)
