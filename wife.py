@@ -1,24 +1,24 @@
 import controls
 import os
 
-# def checkVersion(path,pathaction):
-#     '''高低版本文件'''
-#     pathfiles = controls.pathCommon(path=path, type=getDict(pathaction))['files']
-#     xlslist=[]
-#     xlsxlist=[]
-#     for file in pathfiles:
-#         if file.endswith('.xls'):
-#             xlslist.append(file)
-#         elif file.endswith('.xlsx'):
-#             xlsxlist.append(file)
-#         else:
-#             pass
-#     res=''
-#     for xlsx in xlsxlist:
-#         for xls in xlslist:
-#             if xlsx==xls+'x':
-#                 res=res+xlsx
-#     return res
+def checkVersion(path,pathaction):
+    '''高低版本文件'''
+    pathfiles = controls.pathCommon(path=path, type=getDict(pathaction))['files']
+    xlslist=[]
+    xlsxlist=[]
+    for file in pathfiles:
+        if file.endswith('.xls'):
+            xlslist.append(file)
+        elif file.endswith('.xlsx'):
+            xlsxlist.append(file)
+        else:
+            pass
+    res=''
+    for xlsx in xlsxlist:
+        for xls in xlslist:
+            if xlsx==xls+'x':
+                res=res+xlsx
+    return res
 def getDict(words):
     baseDict={
         '合并xlsx':'merge',
