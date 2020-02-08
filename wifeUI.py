@@ -16,7 +16,8 @@ class WifeUI(wbgui.MyFrame1):
             check=wife.checkVersion(path,pathaction)
             if check:
                 wx.MessageBox('xlsx，xls同时存在的文件有{},这部分文件会被删除!,若都要保留，请先修改这部分文件的文件名'.format(check))
-        wx.MessageBox('合并开始，请等待!')
+        wx.MessageBox('点击“OK”开始合并!')
+        print('开始合并')
         res=wife.interface(action=action,path=path,pathaction=pathaction,sheetnums=sheetnums,resname=resname)
         wx.MessageBox('合并成功，文件保存于{}'.format(res))
     def onCancle(self, event):

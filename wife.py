@@ -1,6 +1,6 @@
 import controls
 import os
-
+import time
 def checkVersion(path,pathaction):
     '''高低版本文件'''
     pathfiles = controls.pathCommon(path=path, type=getDict(pathaction))['files']
@@ -56,24 +56,38 @@ def uni(pathfiles,type='create'):
                     xlslist.remove(xls)
     return res
 def merge2(path,pathaction,sheetnums,resname):
+    start=time.perf_counter()
     switch = getDict(pathaction)
+    #pathfiles=[]
     pathfiles = controls.pathCommon(path=path,type=switch)['files']
+    #print(pathfiles)
     pathfiles=uni(pathfiles)
+    #print(pathfiles)
+    print('总共有{}个文件'.format(str(len(pathfiles))))
     switch=getDict(sheetnums)
     resfile=controls.fileInfo(os.path.join(path,resname))
     content=[]
+    count=1
     if switch=='1':
         for pathfile in pathfiles:
+            print('正在处理第{}个文件,文件名为{}'.format(str(count),pathfile))
             xlsx=controls.fileInfo(pathfile)
             content=content+xlsx.getFileContent(sheetName=None,containTitle=True)
+            count=count+1
         resfile.expXlsx(content=content)
     else:
         for pathfile in pathfiles:
+            #print(pathfile)
+            print('正在处理第{}个文件,文件名为{}'.format(str(count),pathfile))
             xlsx=controls.fileInfo(pathfile)
             content=xlsx.getFileContent(sheetName=None,containTitle=True)
+            #print(content)
             sheetName=os.path.split(xlsx.fileName)[1]
             resfile.expXlsx(content=content,mode='',sheetName=sheetName)
-    uni(pathfiles=controls.pathCommon(path=path,resdirs=[],resfiles=[],type=getDict(pathaction))['files'],type='clear')
+            count=count+1
+    uni(pathfiles=controls.pathCommon(path=path,type=getDict(pathaction))['files'],type='clear')
+    end=time.perf_counter()
+    print('合并结束,合并的文件名为{}（含路径）,共耗时{}秒'.format(resfile.fileName,str(end-start)))
     return resfile.fileName
 
 def interface(action,path,pathaction,sheetnums,resname):
@@ -85,7 +99,6 @@ def interface(action,path,pathaction,sheetnums,resname):
     :param resname: 保存的文件名关键字
     :return:
     '''
-
     if getDict(action)=='merge':
         return merge2(path,pathaction,sheetnums,resname)
 
