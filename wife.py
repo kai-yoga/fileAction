@@ -1,43 +1,6 @@
 import controls
 import os
-# def merge(action,curr,sheetnum,resfileName):
-#     if action=='merge':
-#         path=os.getcwd()
-#         resfile=controls.fileInfo(os.path.join(path,resfileName))
-#         content=[]
-#         if curr=='curr':
-#             pathfiles=[]
-#             zs=os.listdir(path)
-#             for z in zs:
-#                 pathfiles.append(os.path.join(path,z))
-#         else:
-#             pathfiles=controls.pathCommon(path)['files']
-#         for pathfile in pathfiles:
-#             if pathfile.endswith('xls'):
-#                 xlsx=controls.fileInfo(pathfile)
-#                 xlsx.xlsToXlsx()
-#         if sheetnum=='1':
-#             for pathfile in pathfiles:
-#                 if pathfile.endswith('.xlsx'):
-#                     xlsx=controls.fileInfo(pathfile)
-#                     content=content+xlsx.getFileContent(sheetName=None,containTitle=True)
-#             resfile.expXlsx(content=content)
-#         elif sheetnum=='2':
-#             for pathfile in pathfiles:
-#                 #print('pathfile={}'.format(pathfile))
-#                 if pathfile.endswith('.xlsx'):
-#                     xlsx=controls.fileInfo(pathfile)
-#                     content=xlsx.getFileContent(sheetName=None,containTitle=True)
-#                     sheetName=os.path.split(pathfile)[1]
-#                     #print('ws={}'.format(sheetName))
-#                     resfile.expXlsx(content=content,mode='',sheetName=sheetName)
-#         else:
-#             pass
-#     elif action=='file':
-#         pass
-#     else:
-#         pass
-#     return 1
+
 def getDict(words):
     baseDict={
         '合并xlsx':'merge',
@@ -69,20 +32,13 @@ def uni(pathfiles,type='create'):
             else:
                 pass
         for xlsx in xlsxlist:
-            for xls in xlsxlist:
+            for xls in xlslist:
                 if xlsx==xls+'x':
                     os.remove(xlsx)
-                    xls.remove(xls)
+                    xlslist.remove(xls)
     return res
 def merge2(path,pathaction,sheetnums,resname):
     switch = getDict(pathaction)
-    # if switch == '0':
-    #     pathfiles = []
-    #     zs = os.listdir(path)
-    #     for z in zs:
-    #         pathfiles.append(os.path.join(path, z))
-    # else:
-    #     pathfiles = controls.pathCommon(path)
     pathfiles = controls.pathCommon(path=path,type=switch)['files']
     pathfiles=uni(pathfiles)
     switch=getDict(sheetnums)
@@ -99,7 +55,7 @@ def merge2(path,pathaction,sheetnums,resname):
             content=xlsx.getFileContent(sheetName=None,containTitle=True)
             sheetName=os.path.split(xlsx.fileName)[1]
             resfile.expXlsx(content=content,mode='',sheetName=sheetName)
-    uni(pathfiles,type='clear')
+    uni(pathfiles=controls.pathCommon(path=path,resdirs=[],resfiles=[],type=getDict(pathaction))['files'],type='clear')
     return resfile.fileName
 
 def interface(action,path,pathaction,sheetnums,resname):
@@ -117,5 +73,5 @@ def interface(action,path,pathaction,sheetnums,resname):
 
 
 
-# interface(action='合并xlsx',path='C:\\Users\\xjk-lenovo\\Desktop\\20191219交换生',pathaction='包含子文件夹'
-# ,sheetnums='多个工作表',resname='res')
+# interface(action='合并xlsx',path='C:\\Users\\xjk-lenovo\\Desktop\\20191219交换生',pathaction='不包含子文件夹'
+# ,sheetnums='一个工作表',resname='res')
