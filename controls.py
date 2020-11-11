@@ -5,6 +5,7 @@ import zipfile
 import uuid
 import vars
 import openpyxl as opl
+import datetime
 
 class fileInfo:
     def __init__(self, fileName):
@@ -139,6 +140,20 @@ class fileInfo:
             for name in wb.get_sheet_names:
                 wb.remove(name)
             wb.create_sheet(sheetName)
+    def get_cell_value(self,cell):
+        '''获取单元格的值，并且进行格式化，日期转换为XXXX-XX-XX,整数或浮点数转换为字符串'''
+        cell_value=''
+        if cell.value:
+            if cell.is_date:
+                pass
+                year,month,day=cell.value.year,cell.value.month,cell.value.day
+                # cell_value=str(year)+'-'+str(month)+'-'+str(day)
+                cell_value=datetime.date(year=year,month=month,day=day).strftime('%Y-%m-%d')
+            else:
+                if not isinstance(cell.value,str) :
+                    cell_value=str(cell.value)
+        return cell_value
+
     def getFileContent(self,sheetName='sheet1',type='active',containTitle=False):
         '''如果给定sheetName,则返回给定的SheetName的内容，如果没有找到相应的sheetName，如给定type='active'则
         返回活动工作表的内容，如不给定active则返回为空；
@@ -165,10 +180,11 @@ class fileInfo:
                             for row in ws.iter_rows(min_row=min_row, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
                                 rowL = []
                                 for cell in row:
-                                    if cell.value is None:
-                                        rowL.append('')
-                                    else:
-                                        rowL.append(cell.value)
+                                    rowL.append(self.get_cell_value(cell))
+                                    # if cell.value is None:
+                                    #     rowL.append('')
+                                    # else:
+                                    #     rowL.append(cell.value)
                                 L.append(tuple(rowL))
                     if type=='active':
                         if ws is None and len(L)==0:
@@ -176,10 +192,11 @@ class fileInfo:
                             for row in ws.iter_rows(min_row=min_row, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
                                 rowL = []
                                 for cell in row:
-                                    if cell.value is None:
-                                        rowL.append('')
-                                    else:
-                                        rowL.append(cell.value)
+                                    rowL.append(self.get_cell_value(cell))
+                                    # if cell.value is None:
+                                    #     rowL.append('')
+                                    # else:
+                                    #     rowL.append(cell.value)
                                 L.append(tuple(rowL))
                 else:
                     for name in wslist:
@@ -188,10 +205,12 @@ class fileInfo:
                         for row in ws.iter_rows(min_row=min_row, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
                             rowL = []
                             for cell in row:
-                                if cell.value is None:
-                                    rowL.append('')
-                                else:
-                                    rowL.append(cell.value)
+                                rowL.append(self.get_cell_value(cell))
+                                # if cell.value is None:
+                                #     rowL.append('')
+                                # else:
+                                #     # if cell.is_date:
+                                #     rowL.append(cell.value)
                             L.append(tuple(rowL))
                 if not len(L):
                     L=[('filename={}不存在指定的sheet={},且没有要求要返回active的工作表'.format(self.fileName,sheetName),'')]
