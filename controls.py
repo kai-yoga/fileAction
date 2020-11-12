@@ -150,6 +150,8 @@ class fileInfo:
                     pass
                     year,month,day=cell.value.year,cell.value.month,cell.value.day
                     cell_value = datetime.date(year=year, month=month, day=day).strftime('%Y-%m-%d')
+                elif not cell.is_date and cell.data_type=='n':
+                    cell_value = str(int(cell.value))
                 else:
                     cell_value=str(cell.value).replace("‘",'').replace("’",'')
             except:
@@ -158,6 +160,8 @@ class fileInfo:
                     year,month,day=xlrd.xldate_as_tuple(cell.value,0)[0],xlrd.xldate_as_tuple(cell.value,0)[1],xlrd.xldate_as_tuple(cell.value,0)[2]
                 # cell_value=str(year)+'-'+str(month)+'-'+str(day)
                     cell_value=datetime.date(year=year,month=month,day=day).strftime('%Y-%m-%d')
+                if cell.ctype==2:
+                    cell_value = str(int(cell.value))
                 else:
                     cell_value=str(cell.value).replace("‘",'').replace("’",'')
         return cell_value
