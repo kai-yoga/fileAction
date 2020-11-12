@@ -1,9 +1,10 @@
 import os
 import time
-import win32com.client as win32
-import zipfile
+# import win32com.client as win32
+# import zipfile
 import uuid
 import vars
+import xlrd
 import openpyxl as opl
 import datetime
 
@@ -27,47 +28,47 @@ class fileInfo:
         # print(sign)
         return sign
 
-    def getFileInfo(self):
-        '''文件的创建时间'''
-        if self.isExists():
-            creatTime = time.strftime('%Y-%m-%d', time.gmtime(os.path.getctime(self.fileName)))
-            return {'createTime': creatTime}
+    # def getFileInfo(self):
+    #     '''文件的创建时间'''
+    #     if self.isExists():
+    #         creatTime = time.strftime('%Y-%m-%d', time.gmtime(os.path.getctime(self.fileName)))
+    #         return {'createTime': creatTime}
 
-    def removeFile(self):
-        '''删除文件'''
-        if self.isExists():
-            os.remove(self.fileName)
-            return 1
+    # def removeFile(self):
+    #     '''删除文件'''
+    #     if self.isExists():
+    #         os.remove(self.fileName)
+    #         return 1
 
-    def xlsToXlsx(self, mode='new'):
-        '''从xls文件转换为xlsx文件'''
-        if self.isExists() and self.fileName.lower().strip().endswith('xls'):
-            excel = win32.gencache.EnsureDispatch('Excel.Application')
-            wb = excel.Workbooks.Open(self.fileName)
-            if os.path.exists(self.fileName + 'x'):
-                if mode.lower().strip() == 'new':
-                    os.remove(self.fileName + 'x')
-                    wb.SaveAs(self.fileName+'x', FileFormat=51)
-                    wb.Close()
-                    excel.Application.Quit()
-            else:
-                wb.SaveAs(self.fileName + 'x', FileFormat=51)
-                wb.Close()
-                excel.Application.Quit()
-        else:
-            pass
-    def unzip(self,mode='new'):
-        '''如果是压缩文件，则解压该文件'''
-        if self.isExists() and zipfile.is_zipfile(self.fileName):
-            zip=zipfile.ZipFile(self.fileName,'r')
-            ziplist=zip.namelist()
-            for z in ziplist:
-                if os.path.exists(os.path.join(os.getcwd(),z)):
-                    if mode=='new':
-                        os.remove(os.path.join(os.getcwd(),z))
-                        zip.extract(z)
-                else:
-                    zip.extract(z)
+    # def xlsToXlsx(self, mode='new'):
+    #     '''从xls文件转换为xlsx文件'''
+    #     if self.isExists() and self.fileName.lower().strip().endswith('xls'):
+    #         excel = win32.gencache.EnsureDispatch('Excel.Application')
+    #         wb = excel.Workbooks.Open(self.fileName)
+    #         if os.path.exists(self.fileName + 'x'):
+    #             if mode.lower().strip() == 'new':
+    #                 os.remove(self.fileName + 'x')
+    #                 wb.SaveAs(self.fileName+'x', FileFormat=51)
+    #                 wb.Close()
+    #                 excel.Application.Quit()
+    #         else:
+    #             wb.SaveAs(self.fileName + 'x', FileFormat=51)
+    #             wb.Close()
+    #             excel.Application.Quit()
+    #     else:
+    #         pass
+    # def unzip(self,mode='new'):
+    #     '''如果是压缩文件，则解压该文件'''
+    #     if self.isExists() and zipfile.is_zipfile(self.fileName):
+    #         zip=zipfile.ZipFile(self.fileName,'r')
+    #         ziplist=zip.namelist()
+    #         for z in ziplist:
+    #             if os.path.exists(os.path.join(os.getcwd(),z)):
+    #                 if mode=='new':
+    #                     os.remove(os.path.join(os.getcwd(),z))
+    #                     zip.extract(z)
+    #             else:
+    #                 zip.extract(z)
     def expFilename(self,suffix='.xlsx'):
         '''处理文件名
         :param filename:如果不包含路径，则默认路径，如果不指定文件名，则只用默认文件名，如果两者都不指定，那么都是默认
@@ -133,24 +134,32 @@ class fileInfo:
             wb.write(content)
             wb.close()
         return 1
-    def removeXlsxWs(self,sheetName='Sheet1'):
-        '''self本身必须是xlsx格式,且存在'''
-        if self.isExists() and self.fileName.endswith('.xlsx'):
-            wb=opl.load_workbook(self.fileName)
-            for name in wb.get_sheet_names:
-                wb.remove(name)
-            wb.create_sheet(sheetName)
+    # def removeXlsxWs(self,sheetName='Sheet1'):
+    #     '''self本身必须是xlsx格式,且存在'''
+    #     if self.isExists() and self.fileName.endswith('.xlsx'):
+    #         wb=opl.load_workbook(self.fileName)
+    #         for name in wb.get_sheet_names:
+    #             wb.remove(name)
+    #         wb.create_sheet(sheetName)
     def get_cell_value(self,cell):
         '''获取单元格的值，并且进行格式化，日期转换为XXXX-XX-XX,整数或浮点数转换为字符串'''
         cell_value=''
         if cell.value:
-            if cell.is_date:
-                pass
-                year,month,day=cell.value.year,cell.value.month,cell.value.day
+            try:
+                if cell.is_date:
+                    pass
+                    year,month,day=cell.value.year,cell.value.month,cell.value.day
+                    cell_value = datetime.date(year=year, month=month, day=day).strftime('%Y-%m-%d')
+                else:
+                    cell_value=str(cell.value).replace("‘",'').replace("’",'')
+            except:
+                if cell.ctype==3:
+                    # pass
+                    year,month,day=xlrd.xldate_as_tuple(cell.value,0)[0],xlrd.xldate_as_tuple(cell.value,0)[1],xlrd.xldate_as_tuple(cell.value,0)[2]
                 # cell_value=str(year)+'-'+str(month)+'-'+str(day)
-                cell_value=datetime.date(year=year,month=month,day=day).strftime('%Y-%m-%d')
-            else:
-                cell_value=str(cell.value).replace("‘",'').replace("’",'')
+                    cell_value=datetime.date(year=year,month=month,day=day).strftime('%Y-%m-%d')
+                else:
+                    cell_value=str(cell.value).replace("‘",'').replace("’",'')
         return cell_value
 
     def getFileContent(self,sheetName='sheet1',type='active',containTitle=False):
@@ -180,10 +189,6 @@ class fileInfo:
                                 rowL = []
                                 for cell in row:
                                     rowL.append(self.get_cell_value(cell))
-                                    # if cell.value is None:
-                                    #     rowL.append('')
-                                    # else:
-                                    #     rowL.append(cell.value)
                                 L.append(tuple(rowL))
                     if type=='active':
                         if ws is None and len(L)==0:
@@ -192,10 +197,6 @@ class fileInfo:
                                 rowL = []
                                 for cell in row:
                                     rowL.append(self.get_cell_value(cell))
-                                    # if cell.value is None:
-                                    #     rowL.append('')
-                                    # else:
-                                    #     rowL.append(cell.value)
                                 L.append(tuple(rowL))
                 else:
                     for name in wslist:
@@ -205,17 +206,26 @@ class fileInfo:
                             rowL = []
                             for cell in row:
                                 rowL.append(self.get_cell_value(cell))
-                                # if cell.value is None:
-                                #     rowL.append('')
-                                # else:
-                                #     # if cell.is_date:
-                                #     rowL.append(cell.value)
                             L.append(tuple(rowL))
                 if not len(L):
                     L=[('filename={}不存在指定的sheet={},且没有要求要返回active的工作表'.format(self.fileName,sheetName),'')]
                 return L
             elif self.fileName.endswith('.xls'):
-                pass
+                # pass
+                L=[]
+                wb=xlrd.open_workbook(self.fileName)
+                for ws in wb.sheets():
+                    L.append(('内容来自于文件名={},工作表={}'.format(self.fileName, ws.name), ' '))
+                    rows=ws.nrows
+                    cols=ws.ncols
+                    for row in range(rows):
+                        rowL=[]
+                        for col in range(cols):
+                            cell=ws.cell(row,col)
+                            rowL.append(self.get_cell_value(cell))
+                        if len(rowL)>0:
+                            L.append(tuple(rowL))
+                return L
             else:
                 return [('格式不受支持','格式不受支持')]
 

@@ -29,7 +29,7 @@ class MyFrame1(wx.Frame):
         self.m_staticText1.Wrap(-1)
         gSizer1.Add(self.m_staticText1, 0, wx.ALL, 5)
 
-        m_choice1Choices = [u"合并xlsx"]
+        m_choice1Choices = [u"合并xlsx",u"拆分成绩单pdf"]
         self.m_choice1 = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice1Choices, 0)
         self.m_choice1.SetSelection(0)
         gSizer1.Add(self.m_choice1, 0, wx.ALL, 5)

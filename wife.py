@@ -33,27 +33,27 @@ def uni(pathfiles,type='create'):
     res=[]
     if type=='create':
         for pathfile in pathfiles:
-            if pathfile.endswith('.xls'):
-                xls=controls.fileInfo(pathfile)
-                xls.xlsToXlsx()
-                res.append(xls.fileName+'x')
-            else:
-                res.append(pathfile)
-    else:
-        xlslist=[]
-        xlsxlist=[]
-        for z in pathfiles:
-            if z.endswith('.xls'):
-                xlslist.append(z)
-            elif z.endswith('.xlsx'):
-                xlsxlist.append(z)
-            else:
-                pass
-        for xlsx in xlsxlist:
-            for xls in xlslist:
-                if xlsx==xls+'x':
-                    os.remove(xlsx)
-                    xlslist.remove(xls)
+            # if pathfile.endswith('.xls'):
+            #     xls=controls.fileInfo(pathfile)
+            #     xls.xlsToXlsx()
+            #     res.append(xls.fileName+'x')
+            # else:
+            res.append(pathfile)
+    # else:
+    #     xlslist=[]
+    #     xlsxlist=[]
+    #     for z in pathfiles:
+    #         if z.endswith('.xls'):
+    #             xlslist.append(z)
+    #         elif z.endswith('.xlsx'):
+    #             xlsxlist.append(z)
+    #         else:
+    #             pass
+    #     for xlsx in xlsxlist:
+    #         for xls in xlslist:
+    #             if xlsx==xls+'x':
+    #                 os.remove(xlsx)
+    #                 xlslist.remove(xls)
     return res
 def merge2(path,pathaction,sheetnums,resname):
     start=time.perf_counter()
