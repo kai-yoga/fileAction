@@ -150,8 +150,7 @@ class fileInfo:
                 # cell_value=str(year)+'-'+str(month)+'-'+str(day)
                 cell_value=datetime.date(year=year,month=month,day=day).strftime('%Y-%m-%d')
             else:
-                if not isinstance(cell.value,str) :
-                    cell_value=str(cell.value)
+                cell_value=str(cell.value).replace("‘",'').replace("’",'')
         return cell_value
 
     def getFileContent(self,sheetName='sheet1',type='active',containTitle=False):
@@ -238,7 +237,5 @@ def pathCommon(path,type='1'):
                 break
             resdirs=path
         return {'dirs': resdirs, 'files': resfiles}
-
-
 
 
